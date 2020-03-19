@@ -32,12 +32,21 @@ int heapPop(int* v, int& n) {
 	return x;
 }
 
-void heapify(int* v, int n) {
-	int* aux = new int[n];
-	int i = 0;
-	while (i < n)
-		heapPush(aux, i, v[i]);
-	for (int i = 0; i < n; i++)
-		v[i] = aux[i];
-	delete[] aux;
+void heapify(int* v, int n, int i = 0) {
+	if (2 * i + 1 < (n - 1) / 2)
+		heapify(v, n, 2 * i + 1);
+	if (2 * i + 2 < (n - 1) / 2)
+		heapify(v, n, 2 * i + 2);
+
+	int min = i;
+	if (2 * i + 1 < n && v[2 * i + 1] < v[min])
+		min = 2 * i + 1;
+	if (2 * i + 2 < n && v[2 * i + 2] < v[min]) {
+		min = 2 * i + 2;
+	}
+	if (min != i) {
+		int aux = v[i];
+		v[i] = v[min];
+		v[min] = aux;
+	}
 }
