@@ -224,16 +224,15 @@ Polinom operator/(const Polinom& p, const Polinom& q) {
 		return p;
 	Polinom pCopy = p;
 	int degree = p.degree - q.degree;
+	Polinom result(degree, new double[degree + 1]);
 	double* coef = new double[degree + 1];
 	for (int i = degree; i >= 0; i--) {
-		coef[i] = pCopy[pCopy.degree] / q[q.degree];
+		result.coef[i] = pCopy[pCopy.degree] / q[q.degree];
 		for (int j = q.degree; j >= 0; j--)
-			pCopy.coef[i + j] -= coef[i] * q.coef[j];
+			pCopy.coef[i + j] -= result.coef[i] * q.coef[j];
 		pCopy.degree--;
 		while (pCopy.coef[pCopy.degree] == 0)
 			pCopy.degree--;
 	}
-	Polinom result(degree, coef);
-	delete[] coef;
 	return result;
 }
