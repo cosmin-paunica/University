@@ -221,7 +221,7 @@ Polinom operator/(const Polinom& p, const Polinom& q) {
 	if (p.degree == -1)
 		return Polinom();
 	if (p.degree < q.degree)
-		return p;
+		return Polinom();
 	Polinom pCopy = p;
 	int degree = p.degree - q.degree;
 	Polinom result(degree, new double[degree + 1]);
