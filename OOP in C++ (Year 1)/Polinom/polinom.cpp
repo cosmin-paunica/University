@@ -115,7 +115,10 @@ ostream& operator<<(ostream& out, const Polinom& p) {
 					out << p.coef[i];
 			}
 			else {						// in acest else, cazurile sunt similare cu cele de mai sus
-				out << p.coef[i];
+				if (p.coef[i] > 0 || i == 0)
+					out << p.coef[i];
+				else
+					out << -p.coef[i];
 				if (i >= 2)
 					out << "*X^" << i;
 				else if (i == 1)
