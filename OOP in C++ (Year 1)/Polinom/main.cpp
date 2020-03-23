@@ -1,47 +1,80 @@
-// cateva teste pentru functionalitatile oferite de clasa Polinom
+// Cateva teste pentru functionalitatile oferite de clasa Polinom
 
 #include "polinom.h"
+#include <cassert>
+#include <fstream>
 #include <iostream>
 
 using namespace std;
 
+void tests();
+
 int main() {
-	double coef[3] = { 1, 2, 1 };
-	Polinom p(2, coef);
-	cout << "p  =  " << p << endl;
-
-	Polinom q = p;
-	q.addTerm(1, 5);
-	cout << "q  =  " << q << endl;
-
-	Polinom f;
-	f = p + q;
-	cout << "f  =  " << f << " ( =  f + g)" << endl;
-	cout << endl;
-
-	cout << "Valoarea polinomului f in punctul 1 este: " << f.computeValueAt(1) << endl;
-	cout << "Termenul de grad 1 al polinomului f este: " << f[1] << endl;
-	cout << endl;
-
-	cout << "2 * f  =  " << 2 * f << endl;
-	cout << "f * 3  =  " << f * 3 << endl;
-	cout << "p + f  =  " << p + f << endl;
-	cout << "p * f  =  " << p * f << endl;
-	cout << endl;
-
-	double coef1[5] = { -2, 3, 0, -5, 2 };
-	double coef2[3] = { 4, -2, 1 };
-	cout << "Impartirea polinoamelor este: " << Polinom(4, coef1) / Polinom(2, coef2) << endl;
-	cout << endl;
-
-	Polinom g;
-	cout << "Introdceti un polinom de grad cel putin 2:" << endl;
-	cin >> g;
-	cout << "g  =  " << g << endl;
-	g.removeTerm(g.getDegree());
-	cout << "g  =  " << g << endl;
-	g.removeTerm(1);
-	cout << "g  =  " << g << endl;
+	tests();
 
 	return 0;
+}
+
+void tests() {
+	double coefP1[5] = { -2, 3, 0, -5, 2 };
+	Polinom p1(4, coefP1);
+	double coefP2[3] = { 4, -2, 1 };
+	Polinom p2(2, coefP2);
+
+	// testare constructor de copiere
+	Polinom p3 = p1;
+	assert(p1 == p3);
+	p3.addTerm(4, 6);
+	assert(p1 != p3);
+
+	// testare operator de atribuire (=)
+	Polinom p4; 
+	p4 = p1;
+	assert(p1 == p4);
+	p4.addTerm(4, 6);
+	assert(p1 != p4);
+
+	// testare metoda pentru calcularea valorii intr-un punct
+	assert(p1.computeValueAt(2) == -4);
+
+	// testare metode pentru adaugarea si eliminarea unui termen
+	double coefP1Extended[5] = { -2, 3, 4, -5, 2 };
+	Polinom p1Extended(4, coefP1Extended);
+	Polinom p1Old = p1;
+
+	p1.addTerm(4, 2);
+	assert(p1 == p1Extended);
+	p1.removeTerm(2);
+	assert(p1 == p1Old);
+
+	// testare metoda ce returneaza gradul polinomului
+	assert(p1.getDegree() == 4);
+
+	// testare operatori aritmetici
+	double coefSum[5] = { 2, 1, 1, -5, 2 };
+	Polinom sum(4, coefSum);
+	assert(p1 + p2 == sum);
+
+	double coefProduct[7] = { -8, 16, -8, -17, 18, -9, 2 };
+	Polinom product(6, coefProduct);
+	assert(p1 * p2 == product);
+
+	double coefScaledPolynomial[5] = { -4, 6, 0, -10, 4 };
+	Polinom scaledPolynomial(4, coefScaledPolynomial);
+	assert(2 * p1 == scaledPolynomial);
+
+	double coefQuotient[3] = { -10, -1, 2 };
+	Polinom quotient(2, coefQuotient);
+	assert(p1 / p2 == quotient);
+
+	// testare operator []
+	assert(p1[3] == -5);
+
+	// testare operatori >> si <<
+	ifstream fin("polinom.txt");
+	Polinom p5;
+	fin >> p5;
+	cout << p5 << endl << endl;
+
+	cout << "The tests have passed." << endl;
 }

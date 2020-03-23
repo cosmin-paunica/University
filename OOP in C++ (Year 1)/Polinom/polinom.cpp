@@ -1,6 +1,6 @@
 #include "polinom.h"
-#include <cassert>
 #include <cmath>
+#include <exception>
 #include <iostream>
 
 using namespace std;
@@ -11,24 +11,41 @@ Polinom::Polinom() : degree(-1), coef(new double[1]) {
 }
 
 // constructor ce creaza un polinom, fiind dat gradul si un vector de coeficienti
-Polinom::Polinom(int degree, double* coef) : degree(degree), coef(new double[degree + 1]) {
-	assert(degree >= 0);
-	for (int i = 0; i <= degree; i++) {
-		if (i == degree)
-			assert(coef[i] != 0);	// ultimul coeficient trebuie sa fie nenul, altfel ar scadea gradul
-		this->coef[i] = coef[i];
+Polinom::Polinom(int degree, double* coef) : degree(degree) {
+	if (degree < -1)
+		throw invalid_argument("Invalid degree");
+	if (degree == -1) {
+		this->coef = new double[1];
+		if (coef[0] != 0)
+			throw invalid_argument("Non-zero coefficient for null polynomial");	// vrem ca polinomul nul (cu grad -1) sa aiba un unic coeficient nul
+		this->coef[0] = 0;
+	}
+	else {
+		this->coef = new double[degree + 1];
+		for (int i = 0; i <= degree; i++) {
+			if (i == degree && coef[i] == 0)
+				throw invalid_argument("Dominant coefficient is null");	// ultimul coeficient trebuie sa fie nenul, altfel ar scadea gradul
+			this->coef[i] = coef[i];
+		}
 	}
 }
 
 // constructor de copiere
-Polinom::Polinom(const Polinom& p) : degree(p.degree), coef(new double[p.degree + 1]) {
-	for (int i = 0; i <= degree; i++)
-		this->coef[i] = p.coef[i];
+Polinom::Polinom(const Polinom& p) : degree(p.degree) {
+	if (p.degree == -1) {
+		this->coef = new double[1];
+		this->coef[0] = 0;
+	}
+	else {
+		this->coef = new double[p.degree + 1];
+		for (int i = 0; i <= degree; i++)
+			this->coef[i] = p.coef[i];
+	}
 }
 
 // destructor
 Polinom::~Polinom() {
-	delete[] coef;		// nu verificam daca coef != NULL deoarece implementarea nu permite un asemenea caz
+	delete[] coef;		// nu verificam daca coef != NULL deoarece implementarea clasei nu permite un asemenea caz
 }
 
 // metoda ce calculeaza valoarea polinomului intr-un anumit punct
@@ -41,26 +58,30 @@ double Polinom::computeValueAt(int x) const {
 
 // metoda ce adauga un termen de grad i
 void Polinom::addTerm(double c, int i) {
-	assert(0 <= i);
-	if (i > degree) {							// daca indicele este mai mare ca gradul, lungesc vectorul de coeficienti
-		assert(c != 0);						// nu are sens sa adaugam un coeficient egal cu 0, fiindca ar creste aiurea gradul
+	if (i < 0)
+		throw out_of_range("Negative index");
+	if (i > degree && c != 0) {							// daca indicele este mai mare ca gradul si termenul de adaugat
+														// este nenul, lungesc vectorul de coeficienti
 		double* coef = new double[i + 1];
 		for (int j = 0; j <= degree; j++)		// copiem toate valorile vechi ale coeficientilor
 			coef[j] = this->coef[j];
 		for (int j = degree + 1; j < i; j++)	// adaugam zerouri pana la termenul de grad i
 			coef[j] = 0;
-		delete[] this->coef;				// nu verificam daca this->coef != NULL deoarece implementarea nu permite un asemenea caz
+		delete[] this->coef;				// nu verificam daca this->coef != NULL deoarece implementarea clasei nu permite un asemenea caz
 		this->coef = coef;
 		degree = i;
 	}
 	else
-		assert(coef[i] == 0);				// se cere adaugarea unui termen; daca el deja exista, insemna ca l-am modifica, nu ca l-am adauga
+		if (coef[i] != 0)
+			throw invalid_argument("Term already exists");	// se cere adaugarea unui termen;
+															// daca el deja exista, insemna ca l-am modifica, nu ca l-am adauga
 	coef[i] = c;
 }
 
 // metoda ce elimina un termen de grad i
 void Polinom::removeTerm(int i) {
-	assert(0 <= i && i <= degree);
+	if (i < 0 || i > degree)
+		throw out_of_range("Invalid index");
 	if (i == degree) {						// daca eliminam fix termenul dominant, scade gradul polinomului
 		degree--;
 		while (this->coef[degree] == 0)		// gradul scade cu 1 pentru fiecare coeficient nul ce precede coeficientul dominant
@@ -68,14 +89,14 @@ void Polinom::removeTerm(int i) {
 		if (degree == -1) {					// cazul in care polinomul devine nul
 			double* coef = new double[1];
 			coef[0] = 0;
-			delete[] this->coef;			// nu verificam daca this->coef != NULL deoarece implementarea nu permite un asemenea caz
+			delete[] this->coef;			// nu verificam daca this->coef != NULL deoarece implementarea clasei nu permite un asemenea caz
 			this->coef = coef;
 		}
 		else {								// cazul in care polinomul nu devine nul
 			double* coef = new double[degree + 1];
 			for (int j = 0; j <= degree; j++)
 				coef[j] = this->coef[j];
-			delete[] this->coef;			// nu verificam daca this->coef != NULL deoarece implementarea nu permite un asemenea caz
+			delete[] this->coef;
 			this->coef = coef;
 		}
 	}
@@ -129,29 +150,37 @@ ostream& operator<<(ostream& out, const Polinom& p) {
 }
 
 istream& operator>>(istream& in, Polinom& p) {
-	delete[] p.coef;					// nu verificam daca p.coef != NULL, deoarece implementarea nu permite un asemenea caz
+	delete[] p.coef;					// nu verificam daca p.coef != NULL, deoarece implementarea clasei nu permite un asemenea caz
 	in >> p.degree;
 	if (p.degree == -1) {				// daca am citit -1, polinomul este nul
 		p.coef = new double[1];
 		in >> p.coef[0];
-		assert(p.coef[0] == 0);			// pentru ca polinomul sa fie nul, unicul sau coeficient trebuie sa fie 0
+		if (p.coef[0] != 0)
+			throw logic_error("Non-zero coefficient for null polynomial");	// pentru ca polinomul sa fie nul, unicul sau coeficient trebuie sa fie 0
 		return in;
 	}
 	p.coef = new double[p.degree + 1];
 	for (int i = 0; i <= p.degree; i++) {
 		in >> p.coef[i];
-		if (i == p.degree)
-			assert(p.coef[i] != 0);		// termenul dominant nu trebuie sa fie 0
+		if (i == p.degree && p.coef[i] == 0)
+			throw invalid_argument("Dominant coefficient is null");			// termenul dominant nu trebuie sa fie 0
 	}
 	return in;
 }
 
 Polinom Polinom::operator=(const Polinom& p) {
+	delete[] coef;				// nu verificam daca coef != NULL, deoarece implementarea clasei nu permite un asemenea caz
 	degree = p.degree;
-	coef = new double[degree + 1];
-	for (int i = 0; i <= degree; i++)
-		coef[i] = p.coef[i];
-	return *this;
+	if (p.degree == -1) {
+		coef = new double[1];
+		coef[0] = 0;
+	}
+	else {
+		coef = new double[degree + 1];
+		for (int i = 0; i <= degree; i++)
+			coef[i] = p.coef[i];
+		return *this;
+	}
 }
 
 Polinom operator+(const Polinom& p, const Polinom& q) {
@@ -185,7 +214,8 @@ Polinom operator+(const Polinom& p, const Polinom& q) {
 }
 
 double Polinom::operator[](int i) const {
-	assert(0 <= i && i <= degree);
+	if (i < 0 || i > degree)
+		throw out_of_range("Invalid index");
 	return coef[i];
 }
 
@@ -220,7 +250,8 @@ Polinom operator*(const Polinom& p, const int& c) {
 // Totusi, pCopy nu este tratat exact ca un polinom din clasa Polinom, deoarece
 // vectorul de coeficienti nu se micsoreaza pe masura ce ii scade gradul.
 Polinom operator/(const Polinom& p, const Polinom& q) {
-	assert(q.degree >= 0);
+	if (p.degree < 0)
+		throw domain_error("Division by null polynomial");
 	if (p.degree == -1)
 		return Polinom();
 	if (p.degree < q.degree)
@@ -238,4 +269,17 @@ Polinom operator/(const Polinom& p, const Polinom& q) {
 			pCopy.degree--;
 	}
 	return result;
+}
+
+bool Polinom::operator==(const Polinom& p) {
+	if (degree != p.degree)
+		return false;
+	for (int i = 0; i <= degree; i++)
+		if (coef[i] != p.coef[i])
+			return false;
+	return true;
+}
+
+bool Polinom::operator!=(const Polinom& p) {
+	return !(*this == p);
 }

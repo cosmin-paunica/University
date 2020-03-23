@@ -38,6 +38,8 @@ public:
 	friend Polinom operator*(const int&, const Polinom&);
 	friend Polinom operator*(const Polinom&, const int&);
 	friend Polinom operator/(const Polinom&, const Polinom&);
+	bool operator==(const Polinom&);	// operator folosit pentru teste
+	bool operator!=(const Polinom&);	// operator folosit pentru teste
 };
 
 #endif
