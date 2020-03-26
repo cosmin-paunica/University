@@ -1,0 +1,9 @@
+5
+S A B C D
+S 3 aA bB #
+A 1 aS
+B 1 bC
+C 2 bD b
+D 1 bB
+
+this regular grammar accepts words in the form of a^(2n) * b^(3k) for n >= 0 and k >= 0
