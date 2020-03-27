@@ -1,10 +1,10 @@
 #include <cmath>
 
-void countingSortByDigit(int* v, int n, int i) {
+void countingSortByDigit(int* v, int n, int nthDigit) {
 	int* freq = new int[10];
-	int exp = pow(10, i - 1);
-	for (int j = 0; j < 10; j++)
-		freq[j] = 0;
+	int exp = pow(10, nthDigit - 1);
+	for (int i = 0; i < 10; i++)
+		freq[i] = 0;
 	for (int i = 0; i < n; i++)
 		freq[(v[i] / exp) % 10]++;
 
@@ -12,7 +12,7 @@ void countingSortByDigit(int* v, int n, int i) {
 		freq[j] += freq[j - 1];
 
 	int* aux = new int[n];
-	for (int i = n - 1; i >= 0; i--) {		// parcurgerea se face invers pentru ca sortarea sa fie stabila
+	for (int i = n - 1; i >= 0; i--) {
 		aux[freq[(v[i] / exp) % 10] - 1] = v[i];
 		freq[(v[i] / exp) % 10]--;
 	}
@@ -20,6 +20,7 @@ void countingSortByDigit(int* v, int n, int i) {
 		v[i] = aux[i];
 
 	delete[] freq;
+	delete[] aux;
 }
 
 void radixSort(int* v, int n) {

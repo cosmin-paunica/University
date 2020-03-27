@@ -1,17 +1,16 @@
-#include "minheap.h"
+#include "minheap.h"	// see Data Structures in C++ (Year 1) / Implementations of Data Structures /
+#include "utility.h"	// swap
+#include <iostream>
 
-void swap(int& a, int& b) {
-	int aux = a;
-	a = b;
-	b = aux;
-}
 
 void heapSort(int* v, int n) {
-	heapify(v, n);
+	buildMinHeap(v, n);
 
+	int len = n;
 	for (int i = n - 1; i >= 0; i--) {
 		swap(v[0], v[i]);
-		heapify(v, i);
+		len--;
+		minHeapify(v, len, 0);
 	}
 
 	for (int i = 0; i < n / 2; i++)
