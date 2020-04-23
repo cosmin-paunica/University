@@ -1,6 +1,4 @@
-#include "regulargrammar.h"
-#include <fstream>
-#include <string>
+#include "RegularGrammar.h"
 
 using namespace std;
 
@@ -36,26 +34,26 @@ bool RegularGrammar::checkAcceptance(string s) {
 	return false;
 }
 
-istream& operator>>(istream& fin, RegularGrammar& R) {
+istream& operator>>(istream& in, RegularGrammar& R) {
 	int noOfNonterminals;
-	fin >> noOfNonterminals;
+	in >> noOfNonterminals;
 	for (int i = 0; i < noOfNonterminals; i++) {
 		char nonTerminal;
-		fin >> nonTerminal;
+		in >> nonTerminal;
 		R.N.insert(nonTerminal);
 	}
 
 	for (int i = 0; i < noOfNonterminals; i++) {
 		char nonTerminal;
-		fin >> nonTerminal;
+		in >> nonTerminal;
 		int noOfLocalProductions;
-		fin >> noOfLocalProductions;
+		in >> noOfLocalProductions;
 		for (int i = 0; i < noOfLocalProductions; i++) {
 			string s;
-			fin >> s;
+			in >> s;
 			R.P[nonTerminal].insert(s);
 		}
 	}
 
-	return fin;
+	return in;
 }

@@ -1,7 +1,7 @@
 #ifndef REGULARGRAMMAR_H
 #define REGULARGRAMMAR_H
 
-#include <fstream>
+#include <iostream>
 #include <map>
 #include <set>
 #include <string>
@@ -9,8 +9,8 @@
 using namespace std;
 
 class RegularGrammar {
-	set<char> N;
-	map<char, set<string>> P;
+	set<char> N;				// multimea neterminalelor
+	map<char, set<string>> P;	// productiile
 
 public:
 	bool checkAcceptance(string);
