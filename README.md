@@ -1,2 +1,2 @@
 # University
-This repository contains projects and assignments from my University
+This repository contains small projects and assignments from my University
