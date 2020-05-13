@@ -7,39 +7,39 @@
 // Aplicatia este facuta astfel incat niciodata coef sa nu fie NULL,
 // asa ca nu mai verific niciodata acest lucru atunci cand ii eliberez memoria.
 
-#ifndef POLINOM_H
-#define POLINOM_H
+#ifndef POLYNOMIAL_H
+#define POLYNOMIAL_H
 
 #include <iostream>
 
 using namespace std;
 
-class Polinom {
+class Polynomial {
 	int degree;
 	double* coef;
 
 public:
-	Polinom();
-	Polinom(int, double*);
-	Polinom(const Polinom&);
-	~Polinom();
+	Polynomial();
+	Polynomial(int, double*);
+	Polynomial(const Polynomial&);
+	~Polynomial();
 
 	double computeValueAt(int) const;
 	void addTerm(double, int);
 	void removeTerm(int);
 	int getDegree() const;
 
-	friend ostream& operator<<(ostream&, const Polinom&);
-	friend istream& operator>>(istream&, Polinom&);
-	Polinom operator=(const Polinom&);
-	friend Polinom operator+(const Polinom&, const Polinom&);
+	friend ostream& operator<<(ostream&, const Polynomial&);
+	friend istream& operator>>(istream&, Polynomial&);
+	Polynomial operator=(const Polynomial&);
+	friend Polynomial operator+(const Polynomial&, const Polynomial&);
 	double operator[](int) const;
-	friend Polinom operator*(const Polinom&, const Polinom&);
-	friend Polinom operator*(const int&, const Polinom&);
-	friend Polinom operator*(const Polinom&, const int&);
-	friend Polinom operator/(const Polinom&, const Polinom&);
-	bool operator==(const Polinom&);	// operator folosit pentru teste
-	bool operator!=(const Polinom&);	// operator folosit pentru teste
+	friend Polynomial operator*(const Polynomial&, const Polynomial&);
+	friend Polynomial operator*(const int&, const Polynomial&);
+	friend Polynomial operator*(const Polynomial&, const int&);
+	friend Polynomial operator/(const Polynomial&, const Polynomial&);
+	bool operator==(const Polynomial&);	// operator folosit pentru teste
+	bool operator!=(const Polynomial&);	// operator folosit pentru teste
 };
 
 #endif

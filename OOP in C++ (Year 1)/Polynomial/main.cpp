@@ -1,6 +1,4 @@
-// Cateva teste pentru functionalitatile oferite de clasa Polinom
-
-#include "polinom.h"
+#include "Polynomial.h"
 #include <cassert>
 #include <fstream>
 #include <iostream>
@@ -17,18 +15,18 @@ int main() {
 
 void tests() {
 	double coefP1[5] = { -2, 3, 0, -5, 2 };
-	Polinom p1(4, coefP1);
+	Polynomial p1(4, coefP1);
 	double coefP2[3] = { 4, -2, 1 };
-	Polinom p2(2, coefP2);
+	Polynomial p2(2, coefP2);
 
 	// testare constructor de copiere
-	Polinom p3 = p1;
+	Polynomial p3 = p1;
 	assert(p1 == p3);
 	p3.addTerm(4, 6);
 	assert(p1 != p3);
 
 	// testare operator de atribuire (=)
-	Polinom p4; 
+	Polynomial p4;
 	p4 = p1;
 	assert(p1 == p4);
 	p4.addTerm(4, 6);
@@ -39,8 +37,8 @@ void tests() {
 
 	// testare metode pentru adaugarea si eliminarea unui termen
 	double coefP1Extended[5] = { -2, 3, 4, -5, 2 };
-	Polinom p1Extended(4, coefP1Extended);
-	Polinom p1Old = p1;
+	Polynomial p1Extended(4, coefP1Extended);
+	Polynomial p1Old = p1;
 
 	p1.addTerm(4, 2);
 	assert(p1 == p1Extended);
@@ -52,27 +50,27 @@ void tests() {
 
 	// testare operatori aritmetici
 	double coefSum[5] = { 2, 1, 1, -5, 2 };
-	Polinom sum(4, coefSum);
+	Polynomial sum(4, coefSum);
 	assert(p1 + p2 == sum);
 
 	double coefProduct[7] = { -8, 16, -8, -17, 18, -9, 2 };
-	Polinom product(6, coefProduct);
+	Polynomial product(6, coefProduct);
 	assert(p1 * p2 == product);
 
 	double coefScaledPolynomial[5] = { -4, 6, 0, -10, 4 };
-	Polinom scaledPolynomial(4, coefScaledPolynomial);
+	Polynomial scaledPolynomial(4, coefScaledPolynomial);
 	assert(2 * p1 == scaledPolynomial);
 
 	double coefQuotient[3] = { -10, -1, 2 };
-	Polinom quotient(2, coefQuotient);
+	Polynomial quotient(2, coefQuotient);
 	assert(p1 / p2 == quotient);
 
 	// testare operator []
 	assert(p1[3] == -5);
 
 	// testare operatori >> si <<
-	ifstream fin("polinom.txt");
-	Polinom p5;
+	ifstream fin("in.txt");
+	Polynomial p5;
 	fin >> p5;
 	cout << p5 << endl << endl;
 
